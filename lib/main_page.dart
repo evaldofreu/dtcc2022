@@ -1,44 +1,50 @@
-import 'package:dtcc2022/usuario_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'login_widget.dart';
-
-class MainPage extends StatefulWidget {
-  MainPage({Key? key}) : super(key: key);
-
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  UsuarioModel? usuario;
-
-  autenticacao() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('Usuário fez logout!');
-        setState(() {
-          usuario = null;
-        });
-      } else {
-        print('Usuario fez SigIn!');
-        setState(() {
-          usuario = UsuarioModel(
-              id: user.uid, nome: user.displayName, email: user.email);
-        });
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    autenticacao();
-  }
+class MainPage extends StatelessWidget {
+  const MainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: usuario == null ? LoginWidget() : Container());
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("TCC"),
+      ),
+      body: Container(),
+      drawer: Drawer(
+        backgroundColor: Colors.grey[900],
+        elevation: 5,
+        child: Container(
+          child: Column(
+            children: [
+              Container(
+                width:double.infinity,
+                height: 140,
+                child: Card(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Column(
+                        children: [
+              CircleAvatar(
+                      
+                      radius: 55.0,
+                      backgroundImage: NetworkImage("https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80")
+              ),
+              Text("Seu Nome"),
+                        ],
+                      ),
+                      Positioned(
+                        right: 2,
+                        top: 2,
+                        child: IconButton(onPressed: (){}, icon: Icon(Icons.edit)))
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'login_widget.dart';
 import 'firebase_options.dart';
-import 'main_page.dart';
+import 'login_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +20,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Aplicativo de revisão',
         theme: ThemeData.dark(),
-        home: MainPage());
+        home: LoginPage());
   }
 }

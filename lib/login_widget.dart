@@ -19,34 +19,36 @@ class _LoginWidgetState extends State<LoginWidget> {
   GlobalKey<FormState> _key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 300,
-        padding: const EdgeInsets.all(30.0),
-        child: Form(
-          key: _key,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              InputField(
-                "Email",
-                Icons.email,
-                false,
-                onsaved: (email) => usuario.email = email,
-              ),
-              InputField(
-                "Senha",
-                Icons.password,
-                true,
-                onsaved: (senha) => usuario.senha = senha,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              _botaoEntrar(),
-              _botaoCadastar(),
-            ],
+    return Scaffold(
+      body: Center(
+        child: Container(
+          width: 300,
+          padding: const EdgeInsets.all(30.0),
+          child: Form(
+            key: _key,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                InputField(
+                  "Email",
+                  Icons.email,
+                  false,
+                  onsaved: (email) => usuario.email = email,
+                ),
+                InputField(
+                  "Senha",
+                  Icons.password,
+                  true,
+                  onsaved: (senha) => usuario.senha = senha,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                _botaoEntrar(),
+                _botaoCadastar(),
+              ],
+            ),
           ),
         ),
       ),
