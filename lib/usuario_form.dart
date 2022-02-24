@@ -1,11 +1,13 @@
 import 'package:dtcc2022/input_field.dart';
+import 'package:dtcc2022/usuario_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'usuario_model.dart';
 
 class UsuarioForm extends StatefulWidget {
-  const UsuarioForm({Key? key}) : super(key: key);
+  final UsuarioModel? usuario;
+  const UsuarioForm({this.usuario, Key? key}) : super(key: key);
 
   @override
   State<UsuarioForm> createState() => _UsuarioFormState();
@@ -13,7 +15,17 @@ class UsuarioForm extends StatefulWidget {
 
 class _UsuarioFormState extends State<UsuarioForm> {
   GlobalKey<FormState> _key = GlobalKey<FormState>();
-  UsuarioModel usuario = UsuarioModel();
+  UsuarioModel  usuario = UsuarioModel();
+
+@override
+void initState() {
+  super.initState();
+  if (widget.usuario!=null) {
+      usuario = widget.usuario!;
+  }
+}
+  
+
   @override
   Widget build(BuildContext context) {
     String senha = "";
@@ -28,6 +40,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
               "Nome",
               Icons.autofps_select_sharp,
               false,
+              initialValue: usuario.nome,
               validator: (value) {
                 if (value!.isEmpty) {
                   return "Campo não pode ficar vazio";
@@ -41,6 +54,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
               "Email",
               Icons.mail,
               false,
+              initialValue: usuario.email,
               validator: (value) {
                 if (value!.isEmpty || !value.contains('@')) {
                   return "Informe um email válido";
@@ -95,9 +109,13 @@ class _UsuarioFormState extends State<UsuarioForm> {
 
   salvar(UsuarioModel usuario) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
+      if (usuario.id==null) {//se for usuario novo
+         UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: usuario.email!, password: usuario.senha!);
+         usuario.id =  userCredential.user!.uid;              
+      }
+      UsuarioRepository().salvar(usuario);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('A senha informada é muito fácil.');

@@ -1,7 +1,10 @@
+import 'package:dtcc2022/usuario_model.dart';
+import 'package:dtcc2022/usuario_page.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatelessWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final UsuarioModel? usuario;
+  const MainPage(this.usuario, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,12 @@ class MainPage extends StatelessWidget {
                       Positioned(
                         right: 2,
                         top: 2,
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.edit)))
+                        child: IconButton(onPressed: (){
+
+                            Navigator.of(context).push( MaterialPageRoute(builder: (context)=>UsuarioPage(usuario:usuario)) );
+
+
+                        }, icon: Icon(Icons.edit)))
                     ],
                   ),
                 ),

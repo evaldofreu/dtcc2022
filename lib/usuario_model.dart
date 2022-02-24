@@ -5,4 +5,8 @@ class UsuarioModel {
   String? senha;
 
   UsuarioModel({this.id, this.nome, this.email, this.senha});
+
+  Map<String, dynamic> toJson() {
+    return {"nome":nome,"email":email};
+  }
 }
