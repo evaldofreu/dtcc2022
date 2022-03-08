@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dtcc2022/usuario_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   UsuarioModel? usuario;
 
   autenticacao() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       if (user == null) {
         print('Usuário fez logout!');
         setState(() {
@@ -24,9 +25,12 @@ class _LoginPageState extends State<LoginPage> {
         });
       } else {
         print('Usuario fez SigIn!');
+        var snapshot =
+            FirebaseFirestore.instance.collection('usuarios').doc(user.uid);
+        var fbUser = await snapshot.get();
         setState(() {
           usuario = UsuarioModel(
-              id: user.uid, nome: user.displayName, email: user.email);
+              id: user.uid, nome: fbUser['nome'], email: user.email);
         });
       }
     });
@@ -41,6 +45,5 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return usuario == null ? LoginWidget() : MainPage(usuario);
-      
   }
 }

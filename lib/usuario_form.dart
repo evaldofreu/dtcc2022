@@ -15,16 +15,15 @@ class UsuarioForm extends StatefulWidget {
 
 class _UsuarioFormState extends State<UsuarioForm> {
   GlobalKey<FormState> _key = GlobalKey<FormState>();
-  UsuarioModel  usuario = UsuarioModel();
+  UsuarioModel usuario = UsuarioModel();
 
-@override
-void initState() {
-  super.initState();
-  if (widget.usuario!=null) {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.usuario != null) {
       usuario = widget.usuario!;
+    }
   }
-}
-  
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +68,8 @@ void initState() {
               Icons.password,
               true,
               validator: (value) {
-                if (value!.isEmpty || value.length < 3) {
+                if ((value!.isEmpty || value.length < 3) &&
+                    (usuario.id == null)) {
                   return "A senha deve ter ao menos 3 caracteres";
                 } else {
                   senha = value;
@@ -109,18 +109,24 @@ void initState() {
 
   salvar(UsuarioModel usuario) async {
     try {
-      if (usuario.id==null) {//se for usuario novo
-         UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: usuario.email!, password: usuario.senha!);
-         usuario.id =  userCredential.user!.uid;              
+      if (usuario.id == null) {
+        //se for usuario novo
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: usuario.email!, password: usuario.senha!);
+        usuario.id = userCredential.user!.uid;
+      } else {
+        await FirebaseAuth.instance.currentUser!.updatePassword(usuario.senha!);
       }
-      UsuarioRepository().salvar(usuario);
+      await UsuarioRepository().salvar(usuario);
+      Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('A senha informada é muito fácil.');
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('A senha informada é muito fácil.')));
       } else if (e.code == 'email-already-in-use') {
-        print('Email já foi utilizado por outra conta.');
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Email já foi utilizado por outra conta.')));
       }
     } catch (e) {
       print(e);
