@@ -1,7 +1,12 @@
+
+import 'dart:convert';
+
+
 import 'package:dtcc2022/input_field.dart';
 import 'package:dtcc2022/usuario_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'usuario_model.dart';
 
@@ -35,6 +40,19 @@ class _UsuarioFormState extends State<UsuarioForm> {
         key: _key,
         child: Column(
           children: [
+          
+          
+
+            GestureDetector(
+              onTap: _tirarFoto,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  radius: 80,
+                  backgroundImage: usuario.foto!=null?MemoryImage(base64Decode(usuario.foto!)):null,
+                ),
+              ),
+            ),  
             InputField(
               "Nome",
               Icons.autofps_select_sharp,
@@ -115,7 +133,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
             .createUserWithEmailAndPassword(
                 email: usuario.email!, password: usuario.senha!);
         usuario.id = userCredential.user!.uid;
-      } else {
+      } else if (usuario.senha?.isNotEmpty ?? false) {
         await FirebaseAuth.instance.currentUser!.updatePassword(usuario.senha!);
       }
       await UsuarioRepository().salvar(usuario);
@@ -130,6 +148,26 @@ class _UsuarioFormState extends State<UsuarioForm> {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> _tirarFoto() async {
+    final ImagePicker _picker = ImagePicker();
+    try {
+      final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+
+      photo!.readAsBytes().then((imagem){
+
+      setState(()  {
+         
+         usuario.foto = base64Encode(imagem);
+         
+      });
+
+      });
+      
+    } catch (e) {
+      print("Erro selecionando a foto do usuario: $e");
     }
   }
 }
