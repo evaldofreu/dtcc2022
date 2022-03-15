@@ -20,6 +20,8 @@ class UsuarioRepository {
       var filename = usuario.id!+".jpg";
       var ref = FirebaseStorage.instance.ref(filename);
       await ref.putData(base64Decode(usuario.foto!));
+      var url = await ref.getDownloadURL();
+      await col.doc(usuario.id).update({'foto':url});
     }
 
   }

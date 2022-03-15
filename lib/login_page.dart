@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
         var fbUser = await snapshot.get();
         setState(() {
           usuario = UsuarioModel(
-              id: user.uid, nome: fbUser['nome'], email: user.email);
+              id: user.uid, nome: fbUser['nome'], email: user.email, foto:fbUser['foto']);
         });
       }
     });

@@ -49,7 +49,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
                   radius: 80,
-                  backgroundImage: usuario.foto!=null?MemoryImage(base64Decode(usuario.foto!)):null,
+                  backgroundImage: _foto(),
                 ),
               ),
             ),  
@@ -169,5 +169,18 @@ class _UsuarioFormState extends State<UsuarioForm> {
     } catch (e) {
       print("Erro selecionando a foto do usuario: $e");
     }
+  }
+
+  _foto() {
+    if (usuario.foto!=null) {
+      if (usuario.foto!.contains("https")) {
+        return NetworkImage(usuario.foto!);
+      } else {
+        return MemoryImage(base64Decode(usuario.foto!));
+      }
+    } else {
+      return ExactAssetImage("image/pessoa.jpg");
+    }
+    
   }
 }
